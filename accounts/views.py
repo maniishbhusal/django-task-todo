@@ -12,7 +12,7 @@ def signup(request):
     if request.method == 'POST':
         # Create a form instance and populate it with the data from the request
         form = UserRegistrationForm(request.POST)
-        print(form.is_valid())
+        print(form.errors)
         if form.is_valid():
             # Create a User instance without saving it to the database
             user = form.save(commit=False)
@@ -36,23 +36,22 @@ def signup(request):
 # View for user login
 def login_view(request):
     if request.method == 'POST':
-        # Create a form instance and populate it with the data from the request
         form = UserLoginForm(request.POST)
-        print(form.is_valid())
+        print(form.errors)
         if form.is_valid():
-            # Get email and password from the form
+            # Get the email and password from the form's cleaned data
             email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
-            
-            user = authenticate(email=email, password=password)
-            if user is not None:
-                print(email, password)
-                login(request, user)
-                messages.success(request, 'You are now logged in.')
-                return redirect('index')
-    # If the request is not a POST, create an empty form
-    else:
-        form = UserLoginForm()
 
-    # Render the login form template with the form
+            # Get the user object from the form's cleaned data
+            user = form.cleaned_data.get('user')
+
+            login(request, user)
+            messages.success(request, 'You are now logged in.')
+            return redirect('index')
+
+    else:
+        # If the request method is not POST, create a new instance of the login form
+        form = UserLoginForm()
+    # Render the login page with the form
     return render(request, 'accounts/login.html', {'form': form})

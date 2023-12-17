@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth import get_user_model
 from .models import CustomUser
+from django.contrib.auth import authenticate
 
 User = get_user_model()
 
@@ -20,8 +21,8 @@ class UserRegistrationForm(forms.ModelForm):
     # Custom clean method for additional validations
     def clean(self):
         cleaned_data = super().clean()
-        password = cleaned_data.get('password')
-        password2 = cleaned_data.get('password2')
+        password = self.cleaned_data.get('password')
+        password2 = self.cleaned_data.get('password2')
 
         # Check if passwords match
         if password != password2:
@@ -32,35 +33,40 @@ class UserRegistrationForm(forms.ModelForm):
             raise forms.ValidationError(
                 'Password must be at least 5 characters long.')
 
-        # Check if email already exists in the User model
-        if User.objects.filter(email=cleaned_data.get('email')).exists():
-            raise forms.ValidationError('Email already exists.')
-
         # Call the clean method of the parent class
         return super(UserRegistrationForm, self).clean()
 
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+
+        # Check if email already exists in the User model
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError('Email already exists.')
+
+        return email
 
 
+class UserLoginForm(forms.Form):
+    email = forms.EmailField()  # Field for user email
+    # Field for user password
+    password = forms.CharField(widget=forms.PasswordInput)
 
-class UserLoginForm(forms.ModelForm):
     class Meta:
-        model = CustomUser
+        model = CustomUser  # Associate the form with the CustomUser model
+        # Specify the fields to be included in the form
         fields = ('email', 'password')
 
     def clean(self):
         cleaned_data = super().clean()
-        email = cleaned_data.get('email')
-        password = cleaned_data.get('password')
+        email = self.cleaned_data.get('email')
+        password = self.cleaned_data.get('password')
 
-        # Check if email exists in the User model
-        if not User.objects.filter(email=email).exists():
-            raise forms.ValidationError('Email does not exist.')
+        # Authenticate the user using the provided email and password
+        user = authenticate(email=email, password=password)
+        if user is None:
+            raise forms.ValidationError('Invalid email or password.')
 
-        # Check if password is correct
-        user = User.objects.get(email=email)
-
-        if not user.check_password(password):
-            raise forms.ValidationError('Incorrect password.')
+        self.cleaned_data['user'] = user
 
         # Call the clean method of the parent class
         return super(UserLoginForm, self).clean()
