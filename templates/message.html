@@ -1,0 +1,29 @@
+<!-- Messages -->
+{% if messages %}
+  <div id="message-alert" class="alert alert-success alert-dismissible fade show text-center" role="alert">
+    {% for message in messages %}
+      <strong>Message: </strong> {{ message }}
+    {% endfor %}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+  </div>
+{% endif %}
+
+<!-- JavaScript to close the alert after a certain duration -->
+<script>
+  // Use JavaScript to close the alert after 2000 milliseconds (2 seconds)
+  document.addEventListener('DOMContentLoaded', function () {
+    var messageAlert = document.getElementById('message-alert');
+
+    if (messageAlert) {
+      messageAlert.addEventListener('closed.bs.alert', function () {
+        // Alert is closed, perform any additional actions if needed
+      });
+
+      // Set a timeout to close the alert after 2000 milliseconds
+      setTimeout(function () {
+        var alert = new bootstrap.Alert(messageAlert);
+        alert.close();
+      }, 2000);
+    }
+  });
+</script>

@@ -1,0 +1,32 @@
+<div class="row justify-content-center mt-3">
+    <div class="col-2">
+      {% if form.non_field_errors %}
+        <div id="error-alert" class="alert alert-danger alert-dismissible fade show" role="alert">
+          {% for err in form.non_field_errors %}
+            {{ err }}
+          {% endfor %}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  
+  <script>
+    // Use JavaScript to close the alert after 2000 milliseconds (2 seconds)
+    document.addEventListener('DOMContentLoaded', function () {
+      var errorAlert = document.getElementById('error-alert');
+  
+      if (errorAlert) {
+        errorAlert.addEventListener('closed.bs.alert', function () {
+          // Alert is closed, perform any additional actions if needed
+        });
+  
+        // Set a timeout to close the alert after 2000 milliseconds
+        setTimeout(function () {
+          var alert = new bootstrap.Alert(errorAlert);
+          alert.close();
+        }, 2000);
+      }
+    });
+  </script>
+  
