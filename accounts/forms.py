@@ -46,11 +46,6 @@ class UserLoginForm(forms.Form):
     # Field for user password
     password = forms.CharField(widget=forms.PasswordInput)
 
-    # class Meta:
-    #     model = CustomUser  # Associate the form with the CustomUser model
-    #     # Specify the fields to be included in the form
-    #     fields = ('email', 'password')
-
     def clean(self):
         cleaned_data = super().clean()
         email = self.cleaned_data.get('email')

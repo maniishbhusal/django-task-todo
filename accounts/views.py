@@ -27,31 +27,38 @@ def signup(request):
             email = form.cleaned_data.get('email')
 
             # Check if an unverified user with the same email exists
-            existing_user = User.objects.filter(email=email, email_is_verified=False).first()
+            existing_user_exists = User.objects.filter(email=email, email_is_verified=False).exists()
 
-            if existing_user:
+            if existing_user_exists:
                 # Send activation email again or display a message
                 # You can choose to send the activation email here if needed
                 current_site = get_current_site(request)
                 mail_subject = 'Activate your account.'
                 message = render_to_string('accounts/acc_active_email.html', {
                     'request': request,
-                    'user': existing_user,
+                    'user': existing_user_exists,
                     'domain': current_site.domain,
-                    'uid': urlsafe_base64_encode(force_bytes(existing_user.pk)),
-                    'token': account_activation_token.make_token(existing_user),
+                    'uid': urlsafe_base64_encode(force_bytes(existing_user_exists.pk)),
+                    'token': account_activation_token.make_token(existing_user_exists),
                 })
 
                 email = EmailMessage(mail_subject, message, to=[email])
                 email.content_subtype = "html"  # Main content is now text/html
-                email.send()
+                try:
+                    email.send()
+                except Exception as e:
+                    # Handle email sending failure
+                    messages.error(request, 'Failed to send activation email. Please try again later.')
+                    return redirect('signup')
 
                 messages.success(
                     request, 'Activation email sent. Please confirm your email address to complete the registration.')
                 return redirect('user_login')
 
             # If no unverified user with the same email, proceed with creating a new user
-            user = form.save(commit=False)
+            user = CustomUser()
+            user.full_name = form.cleaned_data.get('full_name')
+            user.email = form.cleaned_data.get('email')
             password = form.cleaned_data.get('password')
             user.set_password(password)
             user.save()
@@ -70,7 +77,12 @@ def signup(request):
 
                 email = EmailMessage(mail_subject, message, to=[email])
                 email.content_subtype = "html"  # Main content is now text/html
-                email.send()
+                try:
+                    email.send()
+                except Exception as e:
+                    # Handle email sending failure
+                    messages.error(request, 'Failed to send activation email. Please try again later.')
+                    return redirect('signup')
 
                 messages.success(
                     request, 'Activation email sent. Please confirm your email address to complete the registration.')
