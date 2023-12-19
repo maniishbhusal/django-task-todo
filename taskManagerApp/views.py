@@ -5,6 +5,7 @@ from .models import TodoItem
 from django.contrib import messages
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
+from django.contrib.auth import logout
 
 
 def index(request: HttpRequest) -> render:
@@ -40,3 +41,10 @@ def delete_item(request, id, slug):
     item.delete()
     messages.success(request, 'Task deleted successfully!')
     return redirect('index')
+
+
+@login_required
+def logout_user(request):
+    logout(request)
+    messages.success(request, 'Logged out successfully!')
+    return redirect(reverse('user_login'))

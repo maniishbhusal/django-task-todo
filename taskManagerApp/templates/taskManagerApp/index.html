@@ -12,11 +12,15 @@ Home Page - Task TODO
 {% include "message.html" %}
 {% include "non_field_error.html" %}
 
+<div>
+<a href="{% url "logout" %}" class="btn-logout btn btn-outline-light">Logout</a>
+</div>
+
 <div class="container">
     <div class="todo-app">
         <div class="app-title">
-            <h2>To-do app</h2>
-            <i class="fa-solid fa-book-bookmark"></i>
+            <h1><i class="fa-solid fa-user fa-2xl" style="margin-right:12px;"></i>{{ request.user.full_name }}</h1>
+            <h2>To-do app<i class="fa-solid fa-book-bookmark"></i></h2>
         </div>
         <form action="" method="post">
             {% csrf_token %}
