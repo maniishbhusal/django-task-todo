@@ -7,8 +7,38 @@ Home Page - Task TODO
 {% block content %}
 
 {% include "message.html" %}
+{% load static %}
+<link rel="stylesheet" href="{% static "taskManagerApp/css/style.css" %}">
+
 {% include "non_field_error.html" %}
 
-<h1>This is a home page</h1>
+<div class="container">
+    <div class="todo-app">
+        <div class="app-title">
+            <h2>To-do app</h2>
+            <i class="fa-solid fa-book-bookmark"></i>
+        </div>
+        <form action="" method="post">
+            {% csrf_token %}
+        <div class="row">
+            <input type="text" id="input-box" placeholder="add your tasks">
+            <button type="submit">Add</button>
+        </div>
+    </form>
+        <ul id="list-container">
+            <div class="main_list">
+            <div>
+                <input class="checkbox" type="checkbox" name="" id="checkbox1">
+                <label for="checkbox1">Finish todo app</label>
+            </div>            
+            <div class="icon_for_state">
+                <a href="" class="fa-solid fa-pen-to-square fa-xl"></a>
+                <a href="" class="fa-solid fa-trash fa-xl"></a>
+            </div>
+        </div>
+        </ul>
+    </div>
+</div>
 
-{% endblock content %}
+        <script src="{% static "taskManagerApp/js/script.js" %}"></script>
+        {% endblock content %}
