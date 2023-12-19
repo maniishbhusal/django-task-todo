@@ -6,10 +6,10 @@ Home Page - Task TODO
 
 {% block content %}
 
-{% include "message.html" %}
 {% load static %}
 <link rel="stylesheet" href="{% static "taskManagerApp/css/style.css" %}">
 
+{% include "message.html" %}
 {% include "non_field_error.html" %}
 
 <div class="container">
@@ -21,22 +21,22 @@ Home Page - Task TODO
         <form action="" method="post">
             {% csrf_token %}
         <div class="row">
-            <input type="text" id="input-box" placeholder="add your tasks">
+            <input type="text" id="input-box" name="title" placeholder="add your tasks" required>
             <button type="submit">Add</button>
         </div>
     </form>
-        <ul id="list-container">
-            <div class="main_list">
-            <div>
-                <input class="checkbox" type="checkbox" name="" id="checkbox1">
-                <label for="checkbox1">Finish todo app</label>
-            </div>            
+    <ul id="list-container">
+            {% for item in items %}
+        <div class="main_list">
+                <input class="checkbox" type="checkbox" name="" id="checkbox{{ item.id }}">
+                <label for="checkbox{{ item.id }}">{{ item.title }}</label>
             <div class="icon_for_state">
                 <a href="" class="fa-solid fa-pen-to-square fa-xl"></a>
-                <a href="" class="fa-solid fa-trash fa-xl"></a>
+                <a href="{% url 'delete_item' id=item.id slug=item.slug %}" class="fa-solid fa-trash fa-xl"></a>
             </div>
         </div>
-        </ul>
+        {% endfor %}
+    </ul>
     </div>
 </div>
 

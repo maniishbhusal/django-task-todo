@@ -1,20 +1,31 @@
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import get_user_model
-from django.shortcuts import render, redirect, HttpResponse
+from django.contrib.auth.decorators import permission_required
+from typing import Dict
+from django.http import HttpRequest
+from django.shortcuts import render, redirect
 from .models import TodoItem
+from django.contrib import messages
+from django.urls import reverse
+from django.shortcuts import get_object_or_404
 
-# Create your views here.
+
+def index(request: HttpRequest) -> render:
+    if not request.user.is_authenticated:
+        return redirect(reverse('user_login'))
+
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        TodoItem.objects.create(title=title, user=request.user)
+        messages.success(request, 'Task added successfully!')
+
+    context = {'items': TodoItem.objects.filter(
+        user=request.user).order_by('-id')}
+    return render(request, 'taskManagerApp/index.html', context=context)
 
 
-@login_required
-def index(request):
-    try:
-        User = get_user_model()
-        user = User.objects.get(pk=request.user.pk)
-    except Exception as e:
-        # Handle the exception here
-        user = None
-    if user.is_authenticated:
-        
-        return render(request, 'taskManagerApp/index.html')
-    return redirect('user_login')
+@permission_required('delete_item')
+def delete_item(request, id, slug):
+    # Retrieve the TodoItem object with the given slug or raise a 404 error.
+    item = get_object_or_404(TodoItem, pk=id)
+    item.delete()
+    messages.success(request, 'Task deleted successfully!')
+    return redirect('index')

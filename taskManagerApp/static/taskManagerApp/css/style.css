@@ -92,15 +92,16 @@ ul label{
     cursor: pointer;
     position: relative;
     right: 30px;
+    width: 25rem;
 }
 
 ul .checkbox{
     position: relative;
-    top: 7px;
+    top: 18px;
     width: 24px;
     height: 24px;
     border-radius: 50%;
-    /* left: 0; */
+    left: 0;
     border: 2px solid #ff5945;
 }
 
@@ -114,12 +115,13 @@ a:hover {
 
 .main_list {
     display: flex;
-    justify-content: space-between;
+    /* justify-content: start; */
 }
 
 .icon_for_state{
+    display: flex;
     position: relative;
-    top: 15px;
+    top: 30px;
     /* right: 68px; */
 }
 
