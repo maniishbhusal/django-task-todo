@@ -31,7 +31,7 @@ Home Page - Task TODO
                 <input class="checkbox" type="checkbox" name="" id="checkbox{{ item.id }}">
                 <label for="checkbox{{ item.id }}">{{ item.title }}</label>
             <div class="icon_for_state">
-                <a href="" class="fa-solid fa-pen-to-square fa-xl"></a>
+                <a href="{% url 'update_item' id=item.id slug=item.slug %}" class="fa-solid fa-pen-to-square fa-xl"></a>
                 <a href="{% url 'delete_item' id=item.id slug=item.slug %}" class="fa-solid fa-trash fa-xl"></a>
             </div>
         </div>

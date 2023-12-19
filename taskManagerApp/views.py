@@ -1,5 +1,4 @@
-from django.contrib.auth.decorators import permission_required
-from typing import Dict
+from django.contrib.auth.decorators import login_required
 from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from .models import TodoItem
@@ -18,14 +17,26 @@ def index(request: HttpRequest) -> render:
         messages.success(request, 'Task added successfully!')
 
     context = {'items': TodoItem.objects.filter(
-        user=request.user).order_by('-id')}
+        user=request.user).order_by('-updated_at')}
     return render(request, 'taskManagerApp/index.html', context=context)
 
 
-@permission_required('delete_item')
+@login_required
+def update_item(request, id, slug):
+    item = get_object_or_404(TodoItem, pk=id, user=request.user)
+    if request.method == 'POST':
+        item.title = request.POST.get('title')
+        item.save()
+        messages.success(request, 'Task updated successfully!')
+        return redirect('index')
+    context = {'item': item}
+    return render(request, 'taskManagerApp/update_item.html', context=context)
+
+
+@login_required
 def delete_item(request, id, slug):
     # Retrieve the TodoItem object with the given slug or raise a 404 error.
-    item = get_object_or_404(TodoItem, pk=id)
+    item = get_object_or_404(TodoItem, pk=id, user=request.user)
     item.delete()
     messages.success(request, 'Task deleted successfully!')
     return redirect('index')

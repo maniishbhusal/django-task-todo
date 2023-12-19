@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}
+Update Page - Task TODO
+{% endblock title %}
+
+{% block content %}
+
+{% load static %}
+<link rel="stylesheet" href="{% static "taskManagerApp/css/style.css" %}">
+
+{% include "message.html" %}
+{% include "non_field_error.html" %}
+
+<div class="container">
+    <div class="todo-app">
+        <div class="app-title">
+            <h2>To-do app</h2>
+            <i class="fa-solid fa-book-bookmark"></i>
+        </div>
+        <form action="" method="post">
+            {% csrf_token %}
+        <div class="row">
+            <input type="text" id="input-box" name="title" placeholder="add your tasks" value="{{ item.title }}" required>
+            <button type="submit">Update</button>
+        </div>
+    </form>
+    </div>
+</div>
+
+        <script src="{% static "taskManagerApp/js/script.js" %}"></script>
+        {% endblock content %}

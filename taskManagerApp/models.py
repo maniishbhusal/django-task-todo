@@ -10,6 +10,7 @@ class TodoItem(models.Model):
     title = models.CharField(max_length=255)
     slug = models.SlugField(unique=True)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     completed = models.BooleanField(default=False)
 
     # Automatically generate a slug based on the title before saving the TodoItem.
