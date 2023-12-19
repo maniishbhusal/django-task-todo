@@ -19,7 +19,11 @@ User = get_user_model()
 
 # View for user registration/signup
 
+
 def signup(request):
+    if request.user.is_authenticated:
+        return redirect(reverse('index'))  # Redirect authenticated users to index page
+
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         print(form.errors)
@@ -27,7 +31,8 @@ def signup(request):
             email = form.cleaned_data.get('email')
 
             # Check if an unverified user with the same email exists
-            existing_user_exists = User.objects.filter(email=email, email_is_verified=False).exists()
+            existing_user_exists = User.objects.filter(
+                email=email, email_is_verified=False).exists()
 
             if existing_user_exists:
                 # Send activation email again or display a message
@@ -48,7 +53,8 @@ def signup(request):
                     email.send()
                 except Exception as e:
                     # Handle email sending failure
-                    messages.error(request, 'Failed to send activation email. Please try again later.')
+                    messages.error(
+                        request, 'Failed to send activation email. Please try again later.')
                     return redirect('signup')
 
                 messages.success(
@@ -81,7 +87,8 @@ def signup(request):
                     email.send()
                 except Exception as e:
                     # Handle email sending failure
-                    messages.error(request, 'Failed to send activation email. Please try again later.')
+                    messages.error(
+                        request, 'Failed to send activation email. Please try again later.')
                     return redirect('signup')
 
                 messages.success(
@@ -96,8 +103,6 @@ def signup(request):
         form = UserRegistrationForm()
 
     return render(request, 'accounts/signup.html', {'form': form})
-
-
 
 
 def verify_email_confirm(request, uidb64, token):
@@ -116,9 +121,11 @@ def verify_email_confirm(request, uidb64, token):
         return redirect(reverse('signup'))
 
 
-
 # View for user login
 def login_view(request):
+    if request.user.is_authenticated:
+        return redirect(reverse('index'))  # Redirect authenticated users to index page
+
     if request.method == 'POST':
         form = UserLoginForm(request.POST)
         print(form.errors)
