@@ -1,5 +1,7 @@
 from pathlib import Path
 import os
+from django.contrib.messages import constants as messages
+
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -60,6 +62,11 @@ TEMPLATES = [
         },
     },
 ]
+
+# Mapping Django message levels to Bootstrap alert classes
+MESSAGE_TAGS = {
+    messages.ERROR: "danger",
+}
 
 WSGI_APPLICATION = 'task_todo.wsgi.application'
 

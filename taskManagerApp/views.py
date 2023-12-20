@@ -1,5 +1,7 @@
+from django.views.decorators.csrf import csrf_protect
+from django.db import IntegrityError
 from django.contrib.auth.decorators import login_required
-from django.http import HttpRequest
+from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render, redirect
 from .models import TodoItem
 from django.contrib import messages
@@ -14,8 +16,11 @@ def index(request: HttpRequest) -> render:
 
     if request.method == 'POST':
         title = request.POST.get('title')
-        TodoItem.objects.create(title=title, user=request.user)
-        messages.success(request, 'Task added successfully!')
+        try:
+            TodoItem.objects.create(title=title, user=request.user)
+            messages.success(request, 'Task added successfully!')
+        except IntegrityError as e:
+            messages.error(request, 'Task already exists!')
 
     context = {'items': TodoItem.objects.filter(
         user=request.user).order_by('-updated_at')}
@@ -48,3 +53,12 @@ def logout_user(request):
     logout(request)
     messages.success(request, 'Logged out successfully!')
     return redirect(reverse('user_login'))
+
+
+@csrf_protect
+def update_completed(request, item_id, status):
+    todo_item = get_object_or_404(TodoItem, id=item_id, user=request.user)
+    todo_item.completed = bool(status)
+    todo_item.save()
+
+    return JsonResponse({'success': True})

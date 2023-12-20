@@ -1,11 +1,11 @@
 <!-- Messages -->
 {% if messages %}
-  <div id="message-alert" class="alert alert-success alert-dismissible fade show text-center" role="alert">
-    {% for message in messages %}
+{% for message in messages %}
+  <div id="message-alert" class="alert alert-{{ message.tags }} alert-dismissible fade show text-center" role="alert">
       <strong>Message: </strong> {{ message }}
-    {% endfor %}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
+  {% endfor %}
 {% endif %}
 
 <!-- JavaScript to close the alert after a certain duration -->

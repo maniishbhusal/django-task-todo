@@ -1,43 +1,71 @@
+// Wait for the DOM content to be fully loaded before executing the script
+document.addEventListener('DOMContentLoaded', function () {
+    const checkboxes = document.querySelectorAll('.checkbox');
 
+    checkboxes.forEach(function (checkbox) {
+        const itemId = checkbox.getAttribute('data-id');
+        const label = document.querySelector(`label[for="checkbox${itemId}"]`);
+        const dataCompleted = checkbox.getAttribute('data-completed') === 'True';
 
-// const inputBox = document.getElementById("input-box");
-// const button = document.querySelector("button");
-// const list = document.getElementById("list-container");
+        // Set the initial state of the checkbox based on the 'completed' attribute
+        checkbox.checked = dataCompleted;
+        if (checkbox.checked) label.classList.add('completed');
 
+        // Store a reference to the label for later use
+        checkbox.label = label;
 
-// function addTask(){
-//     if(inputBox.value === ''){
-//         alert("you must write something!");
-//     }else{
-//         let li = document.createElement("li");
-//         li.innerHTML = inputBox.value;
-//         list.appendChild(li);
-//         inputBox.value = '';
-//         let span = document.createElement("span");
-//         span.innerHTML = "x";
-//         li.appendChild(span);
-//     }
-//     saveData();
-// }
-// list.addEventListener("click", (e)=>{
-//     if(e.target.tagName === "LI"){
-//         e.target.classList.toggle("checked");
-//         saveData();
-//     }else if(e.target.tagName === "SPAN"){
-//         e.target.parentElement.remove();
-//         saveData();
-//     }
-// });
+        // Add a 'change' event listener to each checkbox
+        checkbox.addEventListener('change', function () {
+            const itemId = checkbox.getAttribute('data-id');
+            const label = checkbox.label;
 
-// button.addEventListener("click", addTask);
+            // Check if the checkbox is checked
+            if (checkbox.checked) {
+                label.classList.add('completed');
+                updateCompletedStatus(itemId, 1);
+            } else {
+                // Remove 'completed' class from the label if the checkbox is unchecked
+                label.classList.remove('completed');
+                updateCompletedStatus(itemId, 0);
+            }
+        });
+    });
 
-// function saveData(){
-//     localStorage.setItem("data", list.innerHTML);
-// }
-// function showTask(){
-//     const savedData = localStorage.getItem("data");
-//     if(savedData){
-//         list.innerHTML = savedData;
-//     }
-// }
-// window.addEventListener("load", showTask);
+    // Function to send an asynchronous request
+    function sendRequest(url, method, headers, body) {
+        // Use the Fetch API to send a request with specified parameters
+        fetch(url, {
+            method,
+            headers,
+            body
+        });
+    }
+
+    // Function to update the completed status of a todo item
+    function updateCompletedStatus(itemId, status) {
+        const url = `/update-completed/${itemId}/${status}/`;
+        const method = 'POST';
+        const headers = {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCookie('csrftoken')
+        };
+        const body = JSON.stringify({});
+        sendRequest(url, method, headers, body);
+    }
+
+    // Function to get the value of a specific cookie
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});

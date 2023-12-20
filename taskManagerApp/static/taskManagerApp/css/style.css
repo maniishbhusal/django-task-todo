@@ -8,7 +8,7 @@
 }
 body{
     font-family: 'Poppins', sans-serif;
-    background: linear-gradient(135deg, #153677, #4e085f);
+    /* background: linear-gradient(135deg, #153677, #4e085f); */
 
 }
 .container{
@@ -103,6 +103,10 @@ ul label{
     position: relative;
     right: 30px;
     width: 25rem;
+}
+
+ul label.completed {
+    text-decoration: line-through;
 }
 
 ul .checkbox{

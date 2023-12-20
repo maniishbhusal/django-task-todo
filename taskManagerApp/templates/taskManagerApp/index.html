@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}
 Home Page - Task TODO
@@ -6,7 +7,6 @@ Home Page - Task TODO
 
 {% block content %}
 
-{% load static %}
 <link rel="stylesheet" href="{% static "taskManagerApp/css/style.css" %}">
 
 {% include "message.html" %}
@@ -32,7 +32,7 @@ Home Page - Task TODO
     <ul id="list-container">
             {% for item in items %}
         <div class="main_list">
-                <input class="checkbox" type="checkbox" name="" id="checkbox{{ item.id }}">
+                <input class="checkbox" type="checkbox" name="" id="checkbox{{ item.id }}" data-id="{{ item.id }}" data-completed="{{ item.completed }}">
                 <label for="checkbox{{ item.id }}">{{ item.title }}</label>
             <div class="icon_for_state">
                 <a href="{% url 'update_item' id=item.id slug=item.slug %}" class="fa-solid fa-pen-to-square fa-xl"></a>
