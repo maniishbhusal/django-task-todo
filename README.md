@@ -67,3 +67,9 @@ python manage.py migrate
 python manage.py runserver
 ```
 Open your web browser and visit http://127.0.0.1:8000/ to access the app.
+
+## Project Demo
+
+https://github.com/maniishbhusal/django-task-todo/assets/84217955/01f97d5d-015b-484e-a6cc-72b5f2c9b78c
+
+
