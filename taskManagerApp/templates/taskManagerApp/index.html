@@ -13,7 +13,7 @@ Home Page - Task TODO
 {% include "non_field_error.html" %}
 
 <div>
-<a href="{% url "logout" %}" class="btn-logout btn btn-outline-light">Logout</a>
+    <a href="{% url "logout" %}" class="btn-logout btn btn-outline-light">Logout</a>
 </div>
 
 <div class="container">
@@ -24,25 +24,65 @@ Home Page - Task TODO
         </div>
         <form action="" method="post">
             {% csrf_token %}
-        <div class="row">
-            <input type="text" id="input-box" name="title" placeholder="add your tasks" required>
-            <button type="submit">Add</button>
-        </div>
-    </form>
-    <ul id="list-container">
-            {% for item in items %}
-        <div class="main_list">
-                <input class="checkbox" type="checkbox" name="" id="checkbox{{ item.id }}" data-id="{{ item.id }}" data-completed="{{ item.completed }}">
-                <label for="checkbox{{ item.id }}">{{ item.title }}</label>
-            <div class="icon_for_state">
-                <a href="{% url 'update_item' id=item.id slug=item.slug %}" class="fa-solid fa-pen-to-square fa-xl"></a>
-                <a href="{% url 'delete_item' id=item.id slug=item.slug %}" class="fa-solid fa-trash fa-xl"></a>
+            <div class="row">
+                <input type="text" id="input-box" name="title" placeholder="add your tasks" required>
+                <button type="submit">Add</button>
             </div>
-        </div>
-        {% endfor %}
-    </ul>
+        </form>
+        <ul id="list-container">
+            {% for item in items %}
+            <div class="main_list">
+                <input class="checkbox" type="checkbox" name="" id="checkbox{{ item.id }}" data-id="{{ item.id }}"
+                    data-completed="{{ item.completed }}">
+                <label for="checkbox{{ item.id }}">{{ item.title }}</label>
+                <div class="icon_for_state">
+                    <a href="{% url 'update_item' id=item.id slug=item.slug %}"
+                        class="fa-solid fa-pen-to-square fa-xl"></a>
+                    <a href="{% url 'delete_item' id=item.id slug=item.slug %}" class="fa-solid fa-trash fa-xl"></a>
+                </div>
+            </div>
+            {% endfor %}
+        </ul>
+
+
+{% comment %} Pagination  {% endcomment %}
+<ul class="pagination justify-content-center">
+    <li class="page-item">
+        {% if page.has_previous %}
+            <a class="page-link" href="?page={{ page.previous_page_number }}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+                <span class="sr-only">Previous</span>
+            </a>
+        {% endif %}
+    </li>
+    
+    {% for num in page.paginator.page_range %}
+    {% if num == 1 or num == page.number or num == page.paginator.num_pages %}
+        <li class="page-item {% if num == page.number %}active{% endif %}">
+            {% if num == page.number %}
+                <span class="page-link">{{ num }}</span>
+            {% else %}
+                <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+            {% endif %}
+        </li>
+    {% endif %}
+{% endfor %}
+
+
+    <li class="page-item">
+        {% if page.has_next %}
+            <a class="page-link" href="?page={{ page.next_page_number }}" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+                <span class="sr-only">Next</span>
+            </a>
+        {% endif %}
+    </li>
+</ul>
+
+
+        
     </div>
 </div>
 
-        <script src="{% static "taskManagerApp/js/script.js" %}"></script>
-        {% endblock content %}
+<script src="{% static "taskManagerApp/js/script.js" %}"></script>
+{% endblock content %}

@@ -8,6 +8,7 @@ from django.contrib import messages
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import logout
+from django.core.paginator import Paginator
 
 
 def index(request: HttpRequest) -> render:
@@ -22,8 +23,14 @@ def index(request: HttpRequest) -> render:
         except IntegrityError as e:
             messages.error(request, 'Task already exists!')
 
-    context = {'items': TodoItem.objects.filter(
-        user=request.user).order_by('-updated_at')}
+    items = TodoItem.objects.filter(user=request.user).order_by('-updated_at')
+    # Pagination implemented
+    paginator = Paginator(items, 8)
+    # Get the current page number from the query parameters
+    page_number = request.GET.get('page')
+    # Get the corresponding page from the paginator
+    page = paginator.get_page(page_number)
+    context = {'items': page, 'page': page}
     return render(request, 'taskManagerApp/index.html', context=context)
 
 
